@@ -1,0 +1,57 @@
+8
+
+dir
+2577
+http://svn.srobo.org/boards/jointio/pcb/tags/build-00
+http://svn.srobo.org
+
+
+
+2007-10-27T18:45:15.074239Z
+935
+rds204
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+98f67ba8-b320-0410-bda0-b753e294843c
+
+io-joint.sch
+file
+
+
+
+
+2009-03-12T22:57:04.000000Z
+3eaa8fe1b076891e3b5bbbd5064c0106
+2007-10-27T18:33:20.231378Z
+933
+rds204
+has-props
+
+gerbers
+dir
+
+io-joint.brd
+file
+
+
+
+
+2009-03-12T22:57:04.000000Z
+63d4dbcb02389af8402013d229f8bda6
+2007-10-27T18:33:20.231378Z
+933
+rds204
+has-props
+

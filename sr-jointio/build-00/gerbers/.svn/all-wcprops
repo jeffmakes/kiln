@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers
+END
+top.gpi
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/top.gpi
+END
+bottom.gpi
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/bottom.gpi
+END
+top
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/top
+END
+drill.dri
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/drill.dri
+END
+bottom
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/bottom
+END
+bstop.gpi
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/bstop.gpi
+END
+drill
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/drill
+END
+bstop
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/bstop
+END
+tstop.gpi
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/tstop.gpi
+END
+tstop
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/tstop
+END
+gerbers.zip
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/gerbers.zip
+END
+outline.dri
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/!svn/ver/1410/boards/jointio/pcb/tags/build-00/gerbers/outline.dri
+END
