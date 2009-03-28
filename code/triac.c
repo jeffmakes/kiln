@@ -1,6 +1,7 @@
 #include "triac.h"
 #include <signal.h>
 #include <stdint.h>
+#include "watchdog.h"
 #include "device.h"
 
 #define OAADC_1 0x01
@@ -70,6 +71,8 @@ interrupt (TIMERA1_VECTOR) ta_isr(void)
       TACCTL2 = OUTMOD_RESET | CCIE;
       TAIV &= ~0x04;
     }
+
+  clear_wdt();
 }
 
 interrupt (TIMERA0_VECTOR) ta_ccr0(void)

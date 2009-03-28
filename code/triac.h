@@ -13,8 +13,6 @@ extern uint16_t triac_new_triggerphase;
 #define MAX_TRIGGERPHASE 9500
 #define MIN_TRIGGERPHASE 500
 
-sfrb(ADC10AE1, 0x004b);
-
 #define triac_on() do { P2OUT |= (1<<4); } while (0)
 #define triac_off() do { P2OUT &= ~(1<<4); } while (0)
 

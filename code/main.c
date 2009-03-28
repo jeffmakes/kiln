@@ -11,8 +11,6 @@ void init(void);
 
 int i = 0;
 
-#define clear_watchdog() do { WDTCTL = WDTPW | WDTCNTCL; } while (0)
-
 int main( void )
 {
   uint8_t oldpos = 0xff;
@@ -30,8 +28,6 @@ int main( void )
 
   while(1)
     { 
-      //clear_watchdog();
-
       for (time=0; time<1000; time++);
 
       if (encoderpos != oldpos)
@@ -40,7 +36,6 @@ int main( void )
 	  lcd_print_num(triac_triggerphase, 5);
 
 	  triac_set_phase(encoderpos * 40);
-
 	}
       oldpos = encoderpos;
 
@@ -71,7 +66,7 @@ int main( void )
 void init(void)
 {
 	/* Disable the watchdog timer */
-	WDTCTL = WDTHOLD | WDTPW;
+  //	WDTCTL = WDTHOLD | WDTPW;
 
 	/* GPIO: All inputs */
 	P1DIR = P2DIR = P3DIR = P4DIR = 0;
