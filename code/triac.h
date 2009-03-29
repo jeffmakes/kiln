@@ -6,6 +6,7 @@
 
 void triac_init( void );
 void triac_set_power(uint16_t power);
+void triac_reset_ccr2(void);
 
 extern uint16_t triac_triggerphase;
 extern uint16_t triac_new_triggerphase;

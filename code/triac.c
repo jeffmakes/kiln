@@ -75,9 +75,18 @@ interrupt (TIMERA1_VECTOR) ta_isr(void)
   //clear_wdt();
 }
 
+void triac_reset_ccr2(void)
+{
+  TACCR2 = triac_triggerphase;
+
+  if (triac_triggerphase == MAX_TRIGGERPHASE) /* If power is set to minimum, don't turn on triac at all */
+    TACCTL2 = OUTMOD_RESET | CCIE;
+  else
+    TACCTL2 = OUTMOD_SET | CCIE;
+}
+
 interrupt (TIMERA0_VECTOR) ta_ccr0(void)
 {
   /* Timer reset, reconfigure CCR2 */
-  TACCR2 = triac_triggerphase;
-  TACCTL2 = OUTMOD_SET | CCIE;
+  triac_reset_ccr2();
 }

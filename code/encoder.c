@@ -51,9 +51,8 @@ interrupt (PORT2_VECTOR) port2_isr(void)
     {
       if (triac_new_triggerphase != triac_triggerphase)
 	triac_triggerphase = triac_new_triggerphase;
-      TACTL |= TACLR;
-      TACCR2 = triac_triggerphase;
-      TACCTL2 = OUTMOD_SET | CCIE;
+      TACTL |= TACLR;		
+      triac_reset_ccr2();
       P2IFG &= ~(1<<5);
     }
 
