@@ -5,6 +5,7 @@
 #include "triac.h"
 #include "thermocouple.h"
 #include "control.h"
+#include "scheduler.h"
 #include <signal.h>
 
 #define MAX_OUTPUT_POWER 7500
@@ -62,34 +63,32 @@ int main( void )
 
 void init(void)
 {
-	/* Disable the watchdog timer */
-  WDTCTL = WDTHOLD | WDTPW;
-
-	/* GPIO: All inputs */
-	P1DIR = P2DIR = P3DIR = P4DIR = 0;
-
-	/* Use a 8 MHz clock (DCO) */
-	DCOCTL = CALDCO_8MHZ;
-	BCSCTL1 &= ~0x0f;
-	BCSCTL1 |= 
-		/*XT2O=0: XT2 is on*/
-		/*XTS=0: LFXT1 mode select. 0 -Low frequency mode*/
-		DIVA_0 /* ACLK Divider 0: /1 */
-		|CALBC1_8MHZ; /* BCSCTL1 Calibration Data for 16MHz */
-
-	BCSCTL2 = SELM_DCOCLK	/* MCLK from DCO */
-		/* DIVMx = 0 : No MCLK divider */
-		/* SELS = 0: SMCLK from DCO */
-	  | DIVS_DIV8 /* : Divide SMCLK by 8 */
-		/* DCOR = 0 : DCO internal resistor */;
-
-	BCSCTL3 = LFXT1S1; /*VLOCLK */
-	
-	lcd_init();
-	encoder_init();
-	adc10_init();
-	triac_init();
-	eint();
+  /* GPIO: All inputs */
+  P1DIR = P2DIR = P3DIR = P4DIR = 0;
+  
+  /* Use a 8 MHz clock (DCO) */
+  DCOCTL = CALDCO_8MHZ;
+  BCSCTL1 &= ~0x0f;
+  BCSCTL1 |= 
+    /*XT2O=0: XT2 is on*/
+    /*XTS=0: LFXT1 mode select. 0 -Low frequency mode*/
+    DIVA_0 /* ACLK Divider 0: /1 */
+    |CALBC1_8MHZ; /* BCSCTL1 Calibration Data for 16MHz */
+  
+  BCSCTL2 = SELM_DCOCLK	/* MCLK from DCO */
+    /* DIVMx = 0 : No MCLK divider */
+    /* SELS = 0: SMCLK from DCO */
+    | DIVS_DIV8 /* : Divide SMCLK by 8 */
+    /* DCOR = 0 : DCO internal resistor */;
+  
+  BCSCTL3 = LFXT1S0; /*32768Hz watch crystal */
+  
+  lcd_init();
+  encoder_init();
+  adc10_init();
+  triac_init();
+  scheduler_init();
+  eint();
 }
 
 
@@ -116,4 +115,7 @@ void update_display()
   lcd_print_num(setpoint, 4);
   lcd_cursor_to(10,1);
   lcd_print_num(thermocouple_temp, 4);
+
+  lcd_cursor_to(0,1);
+  lcd_print_num(seconds, 4);
 }

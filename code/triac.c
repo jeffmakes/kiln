@@ -72,7 +72,7 @@ interrupt (TIMERA1_VECTOR) ta_isr(void)
       TAIV &= ~0x04;
     }
 
-  //clear_wdt();
+  clear_wdt();
 }
 
 void triac_reset_ccr2(void)
