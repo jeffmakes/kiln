@@ -4,69 +4,66 @@
 #include "adc10.h"
 #include "triac.h"
 #include "thermocouple.h"
+#include "control.h"
 #include <signal.h>
+
+#define MAX_OUTPUT_POWER 7500
+#define MIN_OUTPUT_POWER 500
+
+int16_t setpoint = MIN_SETPOINT;
 
 /* Initialises everything. */
 void init(void);
-
+void draw_display();
+void update_display();
 int i = 0;
 
 int main( void )
 {
-  uint8_t oldpos = 0xff;
-  uint8_t oldbutt = 0xff;
-  uint16_t oldtemp = 0xff;
   uint32_t time;
+  int16_t perror = 0;
+  int16_t ierror = 0;
+  int8_t kp = 60;
+  int8_t ki = 5;
+  int32_t outputpower = 500;
+  uint16_t itimer = 0;
+  uint16_t itimeout = 30;
 
   init();
-  //	lcd_send_char(0xdf);
-  
-  lcd_print_string("Cats:");
-  lcd_cursor_to(9,1);
-  lcd_send_char(0xdf);
-  lcd_send_char('C');  
+  triac_off();
+  draw_display();  
 
   while(1)
     { 
+      update_display();
+
       for (time=0; time<1000; time++);
 
-      if (encoderpos != oldpos)
-	{
-	  lcd_cursor_to(5,0);
-	  lcd_print_num(triac_triggerphase, 5);
+      /* proportional error */
+      perror = setpoint - (int16_t)thermocouple_temp;
 
-	  triac_set_phase(encoderpos * 40);
-	}
-      oldpos = encoderpos;
-
-      if (encoder_button != oldbutt)
+      /* integral error (only compute when output is not saturated, and only infrequently) */
+      if ( (itimer++) == itimeout)
 	{
-	  if (encoder_button)
-	    {
-	      lcd_cursor_to(0,1);
-	      lcd_print_string("Bees!");
-	    }
-	  else
-	    {
-	      lcd_cursor_to(0,1);
-	      lcd_print_string("Temp:");
-	    }
-	  oldbutt = encoder_button;
+	  itimer = 0;
+	   if ( (outputpower != MAX_OUTPUT_POWER) && (outputpower != MIN_OUTPUT_POWER) )
+	    ierror += perror;
 	}
       
-      if (thermocouple_temp != oldtemp)
-	{
-	  lcd_cursor_to(5,1);
-	  lcd_print_num(thermocouple_temp, 4);
-	}
-      oldtemp = thermocouple_temp;
+      outputpower = (kp * (int32_t)perror) + (ki * (int32_t)ierror);
+      if (outputpower > MAX_OUTPUT_POWER)
+	outputpower = MAX_OUTPUT_POWER;
+      else if (outputpower < MIN_OUTPUT_POWER)
+	outputpower = MIN_OUTPUT_POWER;
+	
+      triac_set_power(outputpower);
     }
 }
 
 void init(void)
 {
 	/* Disable the watchdog timer */
-  //	WDTCTL = WDTHOLD | WDTPW;
+  //  WDTCTL = WDTHOLD | WDTPW;
 
 	/* GPIO: All inputs */
 	P1DIR = P2DIR = P3DIR = P4DIR = 0;
@@ -93,4 +90,30 @@ void init(void)
 	adc10_init();
 	triac_init();
 	eint();
+}
+
+
+void draw_display()
+{
+  lcd_cursor_to(0,0);
+  lcd_print_string("Setpoint:     C");
+  lcd_cursor_to(0,1);
+  lcd_print_string("Temp:         C");
+  lcd_cursor_to(14,0);
+  lcd_send_char(0xdf);
+  lcd_cursor_to(14,1);
+  lcd_send_char(0xdf);
+}
+
+void update_display()
+{
+  /* Display format: (16x2 characters) */
+  /* Setpoint:_XXXXoC */
+  /* Temp:_____YYYYoC */
+  
+
+  lcd_cursor_to(10,0);
+  lcd_print_num(setpoint, 4);
+  lcd_cursor_to(10,1);
+  lcd_print_num(thermocouple_temp, 4);
 }

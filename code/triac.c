@@ -6,17 +6,17 @@
 
 #define OAADC_1 0x01
 #define TRIGGER_PULSELENGTH 200
-uint16_t triac_new_triggerphase = 6000;
 uint16_t triac_triggerphase = 0;
+uint16_t triac_new_triggerphase = 0;
 
-void triac_set_phase(uint16_t phase)
+void triac_set_power(uint16_t power)
 {
-  if (phase > MAX_TRIGGERPHASE)
+  triac_new_triggerphase = 10000-power;
+
+  if ( triac_new_triggerphase > MAX_TRIGGERPHASE)
     triac_new_triggerphase = MAX_TRIGGERPHASE;
-  else if (phase < MIN_TRIGGERPHASE)
+  else if (triac_new_triggerphase < MIN_TRIGGERPHASE)
     triac_new_triggerphase = MIN_TRIGGERPHASE;
-  else
-    triac_new_triggerphase = phase;
 }
 
 

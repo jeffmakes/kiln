@@ -2,6 +2,7 @@
 #include "encoder.h"
 #include "lcd.h"
 #include "triac.h"
+#include "control.h"
 
 uint8_t encoderpos = 0;
 uint8_t encoder_button = 0;
@@ -18,9 +19,14 @@ void encoder_init()
 void encoder_change(enc_dir_t dir)
 {
   if ( dir == CLOCKWISE )
-    encoderpos++;
+    setpoint += 10;
   else 
-    encoderpos--;
+    setpoint -= 10;
+  
+  if (setpoint > MAX_SETPOINT)
+    setpoint = MAX_SETPOINT;
+  else if (setpoint < MIN_SETPOINT)
+    setpoint = MIN_SETPOINT;
 }
 
 void encoder_button_down()
