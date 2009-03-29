@@ -11,7 +11,7 @@
 #define adc10_set_channel(x) do { ADC10CTL1 &= ~INCH_15; \
 		ADC10CTL1 |= x << 12; } while (0)
 
-#define ADC_BUFFSZ 256
+#define ADC_BUFFSZ 16
 uint16_t adcbuffer[ADC_BUFFSZ];
 
 void adc10_init( void )
@@ -25,8 +25,7 @@ void adc10_init( void )
     | MSC		/* Move onto the next conversion after the previous*/
     | REF2_5V
     | REFON         /* Use 2.5V reference */
-    | ADC10ON	/* Peripheral on */
-    | ADC10IE;	/* Interrupt enabled */
+    | ADC10ON;	/* Peripheral on */
   
   ADC10CTL1 = /* Select the channel later... */
     SHS_0		/* ADC10SC is the sample-and-hold selector */
@@ -34,7 +33,7 @@ void adc10_init( void )
     /* ISSH = 0 -- No inversion on the s&h signal */
     | ADC10DIV_7	/* Divide clock by 8 (1MHz) */
     | ADC10SSEL_MCLK
-    | CONSEQ_2 	/* Repeat single channel */
+    | CONSEQ_0 	/* Single channel, single conversion */
     | INCH_A3;			/* Channel 3 */
   
   
@@ -42,23 +41,35 @@ void adc10_init( void )
   
   ADC10DTC0 |= ADC10CT; /* DTC Not used. This makes it continuous */
 
-  /* Start the conversion: */
-  ADC10CTL0 |= (ENC | ADC10SC);
+  /* Enable & start the ADC: */
+  ADC10CTL0 |= (ENC | ADC10SC); 
 }
 
-interrupt (ADC10_VECTOR) adc10_isr( void )
+void adc10_update_average( void )
 {
   static uint16_t i = 0;
+  uint8_t j = 0;
   uint32_t average = 0;
-  adcbuffer[i] = ADC10MEM;
-  i++;
-  if (i==ADC_BUFFSZ)			/* every ADC_BUFFSZ results, calculate the average */
-    {    
-      average = 0;
-      for (i=0;i<ADC_BUFFSZ;i++)
-	average += adcbuffer[i];
-      average /= ADC_BUFFSZ;
-      thermocouple_temp = tempconvert[average];
-      i = 0;
+
+  adcbuffer[i] = ADC10MEM;	/* store new result in average array */
+
+  average = 0;
+  for (j=0;j<ADC_BUFFSZ;j++)	/* compute average */
+    average += adcbuffer[j];
+  average /= ADC_BUFFSZ;
+
+  thermocouple_temp = tempconvert[average]; /* perform temperature conversion */
+
+  if ((++i) == ADC_BUFFSZ)	/* loop round to beginning of buffer if we're at the end */
+    i = 0;
+}
+
+void adc10_poll( void )
+{
+  if (ADC10CTL0 & ADC10IFG)	/* new result ready? */
+    {
+      ADC10CTL0 &= ~(ADC10IFG);	/* clear flag */
+      adc10_update_average();	
+      ADC10CTL0 |= ADC10SC;	/* start the next conversion */
     }
 }

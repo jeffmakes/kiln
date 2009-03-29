@@ -4,5 +4,7 @@
 
 /* Standard init function */
 void adc10_init( void );
+void adc10_update_average( void );
+void adc10_poll( void );
 
 #endif	/* __ADC_10_H */

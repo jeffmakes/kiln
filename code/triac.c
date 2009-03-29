@@ -72,7 +72,7 @@ interrupt (TIMERA1_VECTOR) ta_isr(void)
       TAIV &= ~0x04;
     }
 
-  clear_wdt();
+  //clear_wdt();
 }
 
 interrupt (TIMERA0_VECTOR) ta_ccr0(void)

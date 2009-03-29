@@ -34,10 +34,10 @@ int main( void )
   draw_display();  
 
   while(1)
-    { 
-      update_display();
-
+    {
       for (time=0; time<1000; time++);
+      adc10_poll();
+      update_display();
 
       /* proportional error */
       perror = setpoint - (int16_t)thermocouple_temp;
@@ -63,7 +63,7 @@ int main( void )
 void init(void)
 {
 	/* Disable the watchdog timer */
-  //  WDTCTL = WDTHOLD | WDTPW;
+  WDTCTL = WDTHOLD | WDTPW;
 
 	/* GPIO: All inputs */
 	P1DIR = P2DIR = P3DIR = P4DIR = 0;
