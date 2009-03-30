@@ -24,15 +24,15 @@ int main( void )
   uint32_t time;
   int16_t perror = 0;
   int16_t ierror = 0;
-  int8_t kp = 60;
-  int8_t ki = 5;
+  int16_t kp = 50;
+  int16_t ki = 20;
   int32_t outputpower = 500;
   uint16_t itimer = 0;
-  uint16_t itimeout = 30;
+  uint16_t itimeout = 20;
 
   init();
   triac_off();
-  draw_display();  
+  //  draw_display();  
 
   while(1)
     {
@@ -52,6 +52,10 @@ int main( void )
 	}
       
       outputpower = (kp * (int32_t)perror) + (ki * (int32_t)ierror);
+ 
+      if (perror < (-20))		/* If temperature is way above setpoint, turn off element. */
+	outputpower = MIN_OUTPUT_POWER;
+     
       if (outputpower > MAX_OUTPUT_POWER)
 	outputpower = MAX_OUTPUT_POWER;
       else if (outputpower < MIN_OUTPUT_POWER)
@@ -110,12 +114,39 @@ void update_display()
   /* Setpoint:_XXXXoC */
   /* Temp:_____YYYYoC */
   
+  if (status == PROFILE_END)
+    {
+      lcd_cursor_to(0,0);
+      lcd_print_string("     Profile    ");
+      lcd_cursor_to(0,1);
+      lcd_print_string("    Complete!   ");
+    }
+  else
+    {
+      lcd_cursor_to(0,0);
+      lcd_print_num(ramp,2);
+      lcd_send_char(':');
+      switch(status)
+	{
+	case RAMP_UP:
+	  lcd_print_string(" Ramp + ");
+	  break;
+	case RAMP_DOWN:
+	  lcd_print_string(" Ramp - ");
+	  break;
+	default:
+	  lcd_print_string(" Hold   ");
+	  break;
+	}
+      lcd_print_num(profile[ramp].end_temp, 4);
+      lcd_send_char(0xdf);
 
-  lcd_cursor_to(10,0);
-  lcd_print_num(setpoint, 4);
-  lcd_cursor_to(10,1);
-  lcd_print_num(thermocouple_temp, 4);
-
-  lcd_cursor_to(0,1);
-  lcd_print_num(seconds, 4);
+      lcd_cursor_to(0,1);
+      lcd_print_string("Set");
+      lcd_print_num(setpoint, 4);
+      lcd_send_char(0xdf);
+      lcd_print_string(" At");
+      lcd_print_num(thermocouple_temp, 4);
+      lcd_send_char(0xdf);
+    }
 }
