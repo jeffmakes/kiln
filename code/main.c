@@ -124,22 +124,24 @@ void update_display()
   else
     {
       lcd_cursor_to(0,0);
-      lcd_print_num(ramp,2);
+      lcd_print_num(ramp,1);
       lcd_send_char(':');
       switch(status)
 	{
 	case RAMP_UP:
-	  lcd_print_string(" Ramp + ");
+	  lcd_print_string("Ramp+ ");
 	  break;
 	case RAMP_DOWN:
-	  lcd_print_string(" Ramp - ");
+	  lcd_print_string("Ramp- ");
 	  break;
 	default:
-	  lcd_print_string(" Hold   ");
+	  lcd_print_string("Hold  ");
 	  break;
 	}
-      lcd_print_num(profile[ramp].end_temp, 4);
+      lcd_print_num(profile[ramp].end_temp, 3);
       lcd_send_char(0xdf);
+      lcd_print_num( ((ramp_transition_time - seconds)/60)+1, 3);
+      lcd_send_char('m');
 
       lcd_cursor_to(0,1);
       lcd_print_string("Set");
