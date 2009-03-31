@@ -42,6 +42,7 @@ void scheduler_init(void)
   profile[5].duration = (0.5 * 3600);
 
   profile[6].flags = FLAG_PROFILE_END;
+  profile[6].end_temp = 620;	/* end_temp of last profile point determines setpoint at end of profile. */
 }
 
 interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
@@ -58,7 +59,7 @@ interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
 
       ramp++;			/* yep, move to the next ramp */
 
-      if ( !(profile[ramp].flags & FLAG_PROFILE_END) ) /* check for end of profile */
+      if ( !(profile[ramp].flags & FLAG_PROFILE_END )) /* check for end of profile */	  
 	{					       /* not there yet, set up for the ramp */
 	  ramp_transition_time = seconds + profile[ramp].duration; /* set the next transition time */
 	  schedule_setpoint = setpoint;
@@ -66,7 +67,7 @@ interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
 	    ( (float)profile[ramp].end_temp /* temperature at end of ramp */
 	      - (float)setpoint )  /* minus temperature now */
 	    / (float)profile[ramp].duration; /* divided by ramp duration */
-	  
+
 	  if ( setpoint < profile[ramp].end_temp)
 	    status = RAMP_UP;
 	  else if ( setpoint > profile[ramp].end_temp)
@@ -74,12 +75,16 @@ interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
 	  else
 	    status = HOLD;
 	}
-      else
-	{			/* temperature profile finished. */
+
+      else			/* end of profile... */
+	{
+	  schedule_setpoint = profile[ramp].end_temp;
+	  degrees_per_second = 0;
+	  ramp_transition_time = 0;
 	  status = PROFILE_END;
-	  setpoint = 30;
 	}
     }
+
   
   seconds++;
 }  

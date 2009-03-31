@@ -110,20 +110,11 @@ void draw_display()
 
 void update_display()
 {
-  /* Display format: (16x2 characters) */
-  /* Setpoint:_XXXXoC */
-  /* Temp:_____YYYYoC */
-  
+  lcd_cursor_to(0,0);		/* Top line... */
   if (status == PROFILE_END)
-    {
-      lcd_cursor_to(0,0);
-      lcd_print_string("     Profile    ");
-      lcd_cursor_to(0,1);
-      lcd_print_string("    Complete!   ");
-    }
+    lcd_print_string("Profile Complete");
   else
     {
-      lcd_cursor_to(0,0);
       lcd_print_num(ramp,1);
       lcd_send_char(':');
       switch(status)
@@ -142,13 +133,13 @@ void update_display()
       lcd_send_char(0xdf);
       lcd_print_num( ((ramp_transition_time - seconds)/60)+1, 3);
       lcd_send_char('m');
-
-      lcd_cursor_to(0,1);
-      lcd_print_string("Set");
-      lcd_print_num(setpoint, 4);
-      lcd_send_char(0xdf);
-      lcd_print_string(" At");
-      lcd_print_num(thermocouple_temp, 4);
-      lcd_send_char(0xdf);
     }
+
+  lcd_cursor_to(0,1);		/* Bottom line... */
+  lcd_print_string("Set");
+  lcd_print_num(setpoint, 4);
+  lcd_send_char(0xdf);
+  lcd_print_string(" At");
+  lcd_print_num(thermocouple_temp, 4);
+  lcd_send_char(0xdf);
 }
