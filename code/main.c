@@ -25,7 +25,7 @@ int main( void )
   int16_t perror = 0;
   int16_t ierror = 0;
   int16_t kp = 50;
-  int16_t ki = 20;
+  int16_t ki = 5;
   int32_t outputpower = 500;
   uint16_t itimer = 0;
   uint16_t itimeout = 20;
@@ -110,11 +110,37 @@ void draw_display()
 
 void update_display()
 {
+  uint16_t minutes = 0;
+  
+  minutes = ( (ramp_transition_time - seconds)/60 )+1;
+
   lcd_cursor_to(0,0);		/* Top line... */
-  if (status == PROFILE_END)
-    lcd_print_string("Profile Complete");
-  else
+  switch (status)
     {
+    case PROFILE_WAIT_START:
+    case PROFILE_START_COUNTDOWN_SET:      
+      lcd_print_string(" Click to start ");
+      lcd_cursor_to(0,1);
+      lcd_print_string("Delay: ");
+      lcd_print_num((profile[0].duration / 60), 3);
+      if (profile[0].duration == 60)
+	lcd_print_string(" min ");
+      else
+	lcd_print_string(" mins");
+      break;
+    case PROFILE_START_COUNTDOWN:
+      lcd_print_string("  Starting in   ");
+      lcd_cursor_to(0,1);
+      lcd_print_string("  ");
+      lcd_print_num(minutes, 3);
+      lcd_print_string(" minute");
+      if (minutes != 1)
+	lcd_print_string("s");
+      lcd_print_string("    ");
+      break;      
+    case  PROFILE_END:
+      lcd_print_string("Profile Complete");
+    default:
       lcd_print_num(ramp,1);
       lcd_send_char(':');
       switch(status)
@@ -131,15 +157,16 @@ void update_display()
 	}
       lcd_print_num(profile[ramp].end_temp, 3);
       lcd_send_char(0xdf);
-      lcd_print_num( ((ramp_transition_time - seconds)/60)+1, 3);
+      lcd_print_num(minutes, 3);
       lcd_send_char('m');
+      lcd_cursor_to(0,1);		/* Bottom line... */
+      lcd_print_string("Set");
+      lcd_print_num(setpoint, 4);
+      lcd_send_char(0xdf);
+      lcd_print_string(" At");
+      lcd_print_num(thermocouple_temp, 4);
+      lcd_send_char(0xdf);
+      break;
     }
 
-  lcd_cursor_to(0,1);		/* Bottom line... */
-  lcd_print_string("Set");
-  lcd_print_num(setpoint, 4);
-  lcd_send_char(0xdf);
-  lcd_print_string(" At");
-  lcd_print_num(thermocouple_temp, 4);
-  lcd_send_char(0xdf);
 }

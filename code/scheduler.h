@@ -1,7 +1,7 @@
 #ifndef __SCHEDULER_H
 #define __SCHEDULER_H
 
-typedef enum {PROFILE_START = 0, HOLD, RAMP_UP, RAMP_DOWN, PROFILE_END} profile_status_t;
+typedef enum {PROFILE_WAIT_START = 0, PROFILE_START_COUNTDOWN_SET, PROFILE_START_COUNTDOWN, HOLD, RAMP_UP, RAMP_DOWN, PROFILE_END} profile_status_t;
 
 typedef struct 
 {

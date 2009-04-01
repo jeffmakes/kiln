@@ -7,8 +7,8 @@
 uint32_t seconds = 0;
 uint8_t ramp = 0;
 ramp_t profile[7];
-profile_status_t status = PROFILE_START;
-uint32_t ramp_transition_time = 0;
+profile_status_t status = PROFILE_WAIT_START;
+uint32_t ramp_transition_time = 0xffffffff;
 
 
 void scheduler_init(void)
@@ -25,6 +25,7 @@ void scheduler_init(void)
 
   profile[0].flags = FLAG_PROFILE_START;
   profile[0].end_temp = 20; 
+  profile[0].duration = 0;
 
   profile[1].end_temp = 270;
   profile[1].duration = (0.5 * 3600);
@@ -48,12 +49,17 @@ void scheduler_init(void)
 interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
 {
   static float degrees_per_second = 0;
-  static float schedule_setpoint = 20;
+  static float schedule_setpoint = 0;
 
   schedule_setpoint += degrees_per_second;
   setpoint = (int16_t)schedule_setpoint;
 
-  if (seconds == ramp_transition_time) /* check for end of ramp */
+  if (status == PROFILE_START_COUNTDOWN_SET)
+    {
+      ramp_transition_time = seconds + profile[0].duration;
+      status = PROFILE_START_COUNTDOWN;
+    }  
+  if (seconds == ramp_transition_time)  /* check for end of ramp or start of profile */
     {				
       setpoint = profile[ramp].end_temp;
 

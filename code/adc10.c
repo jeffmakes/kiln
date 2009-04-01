@@ -11,7 +11,7 @@
 #define adc10_set_channel(x) do { ADC10CTL1 &= ~INCH_15; \
 		ADC10CTL1 |= x << 12; } while (0)
 
-#define ADC_BUFFSZ 16
+#define ADC_BUFFSZ 32
 uint16_t adcbuffer[ADC_BUFFSZ];
 
 void adc10_init( void )

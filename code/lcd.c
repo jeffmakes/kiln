@@ -3,10 +3,10 @@
 #define set(reg,bit) ((reg) |= 1 << (bit))
 #define clear(reg,bit) ((reg) &= ~(1 << (bit)))
 
-void delay()		/* ~63us */
+void delay()	       
 {
   uint32_t i = 0;
-  for (i=0; i<1000; i++);
+  for (i=0; i<50; i++);
 } 
 
 void lcd_strobe()

@@ -3,6 +3,7 @@
 #include "lcd.h"
 #include "triac.h"
 #include "control.h"
+#include "scheduler.h"
 
 uint8_t encoderpos = 0;
 uint8_t encoder_button = 0;
@@ -18,15 +19,17 @@ void encoder_init()
 
 void encoder_change(enc_dir_t dir)
 {
+  /* 59940 seconds = 999 minutes */
   if ( dir == CLOCKWISE )
-    setpoint += 10;
-  else 
-    setpoint -= 10;
-  
-  if (setpoint > MAX_SETPOINT)
-    setpoint = MAX_SETPOINT;
-  else if (setpoint < MIN_SETPOINT)
-    setpoint = MIN_SETPOINT;
+    if (profile[0].duration == 59940)
+      profile[0].duration = 0;
+    else
+      profile[0].duration += 60;
+  else
+    if (profile[0].duration == 0)
+      profile[0].duration = 59940;
+    else
+      profile[0].duration -= 60;
 }
 
 void encoder_button_down()
@@ -36,6 +39,9 @@ void encoder_button_down()
 
 void encoder_button_up()
 {
+  if (status == PROFILE_WAIT_START)
+    status = PROFILE_START_COUNTDOWN_SET;
+
   encoder_button = 0;
 }
   
