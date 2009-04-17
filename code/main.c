@@ -117,6 +117,16 @@ void update_display()
   lcd_cursor_to(0,0);		/* Top line... */
   switch (status)
     {
+    case MODE_CHOICE_MANUAL:
+      lcd_print_string("Choose mode:    ");
+      lcd_cursor_to(0,1);
+      lcd_print_string(" Manual         ");
+      break;
+    case MODE_CHOICE_PROFILE:
+      lcd_print_string("Choose mode:    ");
+      lcd_cursor_to(0,1);
+      lcd_print_string(" Profile        ");
+      break;
     case PROFILE_WAIT_START:
     case PROFILE_START_COUNTDOWN_SET:      
       lcd_print_string(" Click to start ");
@@ -128,6 +138,16 @@ void update_display()
       else
 	lcd_print_string(" mins");
       break;
+    case MANUAL_MODE:
+      lcd_print_string("Manual mode     ");
+      lcd_cursor_to(0,1);		/* Bottom line... */
+      lcd_print_string("Set");
+      lcd_print_num(setpoint, 4);
+      lcd_send_char(0xdf);
+      lcd_print_string(" At");
+      lcd_print_num(thermocouple_temp, 4);
+      lcd_send_char(0xdf);
+      break;      
     case PROFILE_START_COUNTDOWN:
       lcd_print_string("  Starting in   ");
       lcd_cursor_to(0,1);

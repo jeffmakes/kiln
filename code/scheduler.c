@@ -7,7 +7,7 @@
 uint32_t seconds = 0;
 uint8_t ramp = 0;
 ramp_t profile[7];
-profile_status_t status = PROFILE_WAIT_START;
+profile_status_t status = MODE_CHOICE_MANUAL;
 uint32_t ramp_transition_time = 0xffffffff;
 
 
@@ -50,6 +50,9 @@ interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
 {
   static float degrees_per_second = 0;
   static float schedule_setpoint = 0;
+
+  if (status == MANUAL_MODE)
+    return;
 
   schedule_setpoint += degrees_per_second;
   setpoint = (int16_t)schedule_setpoint;

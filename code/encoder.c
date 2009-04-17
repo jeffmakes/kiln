@@ -20,16 +20,39 @@ void encoder_init()
 void encoder_change(enc_dir_t dir)
 {
   /* 59940 seconds = 999 minutes */
-  if ( dir == CLOCKWISE )
-    if (profile[0].duration == 59940)
-      profile[0].duration = 0;
-    else
-      profile[0].duration += 60;
-  else
-    if (profile[0].duration == 0)
-      profile[0].duration = 59940;
-    else
-      profile[0].duration -= 60;
+  switch(status)
+    {
+    case PROFILE_WAIT_START:
+      if ( dir == CLOCKWISE )
+	if (profile[0].duration == 59940)
+	  profile[0].duration = 0;
+	else
+	  profile[0].duration += 60;
+      else
+	if (profile[0].duration == 0)
+	  profile[0].duration = 59940;
+	else
+	  profile[0].duration -= 60;
+      break;
+    case MODE_CHOICE_MANUAL:
+      status = MODE_CHOICE_PROFILE;
+      break;
+    case MODE_CHOICE_PROFILE:
+      status = MODE_CHOICE_MANUAL;
+      break;
+    case MANUAL_MODE:
+      if (dir == CLOCKWISE)
+	setpoint ++;
+      else 
+	setpoint --;
+      if (setpoint > MAX_SETPOINT)
+	setpoint = MAX_SETPOINT;
+      if (setpoint < MIN_SETPOINT)
+	setpoint = MIN_SETPOINT;      
+      break;
+    default:
+      break;
+    }
 }
 
 void encoder_button_down()
@@ -41,6 +64,11 @@ void encoder_button_up()
 {
   if (status == PROFILE_WAIT_START)
     status = PROFILE_START_COUNTDOWN_SET;
+
+  if (status == MODE_CHOICE_MANUAL)
+    status = MANUAL_MODE;
+  if (status == MODE_CHOICE_PROFILE)
+    status = PROFILE_WAIT_START;  
 
   encoder_button = 0;
 }
