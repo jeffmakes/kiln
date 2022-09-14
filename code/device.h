@@ -27,6 +27,6 @@
 
 
 
-#include <msp430x22x4.h>
+#include <msp430f2274.h>
 
 #endif  /* __DEVICE_H */

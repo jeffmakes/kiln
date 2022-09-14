@@ -17,7 +17,7 @@ uint16_t adcbuffer[ADC_BUFFSZ];
 void adc10_init( void )
 {
   ADC10CTL0 = SREF_0 	/* Use VCC and VSS as the references */
-    | ADC10SHT_DIV64 /* 64 x ADC10CLKs
+    | ADC10SHT_3 /* 64 x ADC10CLKs
 			8 us */
     /* ADC10SR = 0 -- Support 200 ksps sampling (TODO: maybe this can be set) */
     /* REFOUT = 0 -- Reference output off */
@@ -32,12 +32,12 @@ void adc10_init( void )
     /* ADC10DF = 0 -- Straight binary format */
     /* ISSH = 0 -- No inversion on the s&h signal */
     | ADC10DIV_7	/* Divide clock by 8 (1MHz) */
-    | ADC10SSEL_MCLK
+    | ADC10SSEL_2 /* MCLK as source */
     | CONSEQ_0 	/* Single channel, single conversion */
-    | INCH_A3;			/* Channel 3 */
+    | INCH_3;			/* Channel 3 */
   
   
-  ADC10AE |= (1<<3);	/* Enable analog input 3 */
+  ADC10AE0 |= (1<<3);	/* Enable analog input 3 */
   
   ADC10DTC0 |= ADC10CT; /* DTC Not used. This makes it continuous */
 

@@ -79,10 +79,10 @@ void init(void)
     DIVA_0 /* ACLK Divider 0: /1 */
     |CALBC1_8MHZ; /* BCSCTL1 Calibration Data for 16MHz */
   
-  BCSCTL2 = SELM_DCOCLK	/* MCLK from DCO */
+  BCSCTL2 = SELM_0	/* MCLK from DCO */
     /* DIVMx = 0 : No MCLK divider */
     /* SELS = 0: SMCLK from DCO */
-    | DIVS_DIV8 /* : Divide SMCLK by 8 */
+    | DIVS_3 /* : Divide SMCLK by 8 */
     /* DCOR = 0 : DCO internal resistor */;
   
   BCSCTL3 = LFXT1S0; /*32768Hz watch crystal */
@@ -92,7 +92,7 @@ void init(void)
   adc10_init();
   triac_init();
   scheduler_init();
-  eint();
+  __eint();
 }
 
 

@@ -46,12 +46,12 @@ void triac_init(void)
   P2IES &= ~(1<<5);		/* Interrupt on rising edge */
 
   TACTL =
-    TASSEL_SMCLK		/* Clock timer A from SMCLK */
+    TASSEL_2		/* Clock timer A from SMCLK */
     //    | ID_DIV2 		/* Timer A clock = SMCLK/2 = 500kHz */
-    | MC_UPTO_CCR0;			/* Continuous count mode */
+    | MC_1;			/* Count up to CCR0 */
 
   /* CCR2 config */
-  TACCTL2 = OUTMOD_SET	/* TA2 set on CCR2, cleared on CCR0 */
+  TACCTL2 = OUTMOD_1	/* TA2 set on CCR2, cleared on CCR0 */
     | CCIE;			/* interrupt on CCR2 */
 
   /* enable CCR0 interrupt */
@@ -61,14 +61,14 @@ void triac_init(void)
   TACCR2 = triac_triggerphase;
 }
 
-interrupt (TIMERA1_VECTOR) ta_isr(void)
+void __attribute__ ((interrupt(TIMERA1_VECTOR))) ta_isr (void)
 {
   if (TAIV & 0x04)		/* when TA hits CCR2, move CCR2 to set the end of the firing pulse */
     {
       if (TACCR2 == triac_triggerphase)
 	TACCR2 = triac_triggerphase + TRIGGER_PULSELENGTH;
       
-      TACCTL2 = OUTMOD_RESET | CCIE;
+      TACCTL2 = OUTMOD_5 | CCIE; // OUTMOD RESET
       TAIV &= ~0x04;
     }
 
@@ -80,12 +80,12 @@ void triac_reset_ccr2(void)
   TACCR2 = triac_triggerphase;
 
   if (triac_triggerphase == MAX_TRIGGERPHASE) /* If power is set to minimum, don't turn on triac at all */
-    TACCTL2 = OUTMOD_RESET | CCIE;
+    TACCTL2 = OUTMOD_5 | CCIE; // OUTMOD SET
   else
-    TACCTL2 = OUTMOD_SET | CCIE;
+    TACCTL2 = OUTMOD_1 | CCIE; // OUTMOD RESET
 }
 
-interrupt (TIMERA0_VECTOR) ta_ccr0(void)
+void __attribute__ ((interrupt(TIMERA0_VECTOR))) ta_ccr0 (void)
 {
   /* Timer reset, reconfigure CCR2 */
   triac_reset_ccr2();

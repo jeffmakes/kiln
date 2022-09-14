@@ -73,7 +73,7 @@ void encoder_button_up()
   encoder_button = 0;
 }
   
-interrupt (PORT2_VECTOR) port2_isr(void)
+void __attribute__ ((interrupt(PORT2_VECTOR))) encoder_isr (void)
 {
   static uint8_t oldstate = 0;
   uint8_t newstate = 0;

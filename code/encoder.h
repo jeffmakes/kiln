@@ -10,8 +10,8 @@ extern uint8_t encoder_button;
 
 void encoder_change(enc_dir_t dir);
 void encoder_init();
-interrupt (PORT2_VECTOR) encoder_isr(void);
-
+//interrupt PORT2_VECTOR encoder_isr(void);
+void __attribute__ ((interrupt(PORT2_VECTOR))) encoder_isr (void);
 
 
 

@@ -1,6 +1,7 @@
 #ifndef __LCD_H
 #define __LCD_H
 #include "device.h"
+#include <stdint.h>
 
 #define RS (1<<0)
 #define RW (1<<6)
@@ -30,7 +31,7 @@ void lcd_send_cmd(uint8_t cmd);
 void lcd_send_char(uint8_t character);
 void lcd_init();
 void lcd_cursor_to(uint8_t x, uint8_t y);
-void lcd_print_string(uint8_t *string);
+void lcd_print_string(char *string);
 void lcd_print_num(uint16_t num, uint8_t digits);
 
 #endif	/* __LCD_H */

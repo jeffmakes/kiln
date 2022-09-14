@@ -52,7 +52,7 @@ void lcd_cursor_to(uint8_t x, uint8_t y)
 
 void lcd_print_num(uint16_t num, uint8_t digits)
 {
-  static uint8_t decbuffer[6];
+  static char decbuffer[6];
   uint8_t i = 0;
 
   if (digits>5)
@@ -78,7 +78,7 @@ void lcd_print_num(uint16_t num, uint8_t digits)
   lcd_print_string(decbuffer);
 }
 
-void lcd_print_string(uint8_t *string)
+void lcd_print_string(char *string)
 {
   uint8_t i = 0;
   while (string[i] != '\0')

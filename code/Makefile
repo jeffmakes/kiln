@@ -1,8 +1,8 @@
 ARCH=msp430f2274
-CFLAGS := -mmcu=$(ARCH) -g -Wall 
+CFLAGS := -mmcu=$(ARCH) -g -Wall -I/opt/ti/msp430/gcc/include/ 
 # CFLAGS := -mmcu=$(ARCH) -g -Wall -O
 # CFLAGS += -mendup-at=main
-LDFLAGS := -I/opt/ti/msp430/gcc/include/
+LDFLAGS := -L/opt/ti/msp430/gcc/include/ 
 
 CC := msp430-elf-gcc
 

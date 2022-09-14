@@ -17,8 +17,8 @@ void scheduler_init(void)
   /* which is connected to the LFXT1 32kHz watch crystal oscillator */
 
   TBCTL = 
-    TBSSEL_ACLK 		/* Source Timer B from ACLK */
-    | MC_UPTO_CCR0;		/* Count to CCR0 value */
+    TBSSEL_1 		/* Source Timer B from ACLK */
+    | MC_1;		/* Count to CCR0 value */
 
   TBCCTL0 = CCIE;		/* Enable TBCCR0 interrupt */
   TBCCR0 = 32767;		/* Set up CCR0 for 1Hz interrupt */
@@ -46,7 +46,7 @@ void scheduler_init(void)
   profile[6].end_temp = 620;	/* end_temp of last profile point determines setpoint at end of profile. */
 }
 
-interrupt (TIMERB0_VECTOR) tb_isr_1Hz(void)
+void __attribute__ ((interrupt(TIMERB0_VECTOR))) tb_isr_1Hz (void)
 {
   static float degrees_per_second = 0;
   static float schedule_setpoint = 0;
